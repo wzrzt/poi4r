@@ -21,7 +21,7 @@ library(rJava)
 ```
 
 ```{r}
-xls_path = "/Users/runrun.wei/Projects/Tools/df-toolbox/DataLoading-会议与文档/Mock4新模板/5.09-Vendor Master-Company infomation-Supplier company import template.xls"
+xls_path = "template.xls"
 inputStream = .jnew("java/io/FileInputStream", xls_path)
 
 wbFactory = .jnew("org/apache/poi/ss/usermodel/WorkbookFactory")
