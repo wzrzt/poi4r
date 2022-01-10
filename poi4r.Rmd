@@ -1,0 +1,71 @@
+---
+title: "Use java apache POI read Excel"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+library(rJava)
+```
+
+```{r}
+.jinit(parameters="-Xmx1024m")
+.jaddClassPath('java/poi-5.0.0.jar')
+.jaddClassPath('java/poi-ooxml-5.0.0.jar')
+.jaddClassPath('java/commons-math3-3.6.1.jar')
+
+```
+
+```{r}
+xls_path = "/Users/runrun.wei/Projects/Tools/df-toolbox/DataLoading-会议与文档/Mock4新模板/5.09-Vendor Master-Company infomation-Supplier company import template.xls"
+inputStream = .jnew("java/io/FileInputStream", xls_path)
+
+wbFactory = .jnew("org/apache/poi/ss/usermodel/WorkbookFactory")
+
+workbook = wbFactory$create(.jcast(inputStream, 'java/io/InputStream'))
+
+sheet = workbook$getSheetAt(as.integer(0))
+
+dataValidations = sheet$getDataValidations()
+```
+
+```{r}
+dataValidation_cnt = dataValidations$size()
+
+for (i in 1:dataValidation_cnt){
+    dataValidation = dataValidations$get(as.integer(i-1))
+
+    # 获取dataValidation的位置
+    addressList = dataValidation$getRegions()
+    addresses = addressList$getGenericChildren()
+    address = addresses$get(as.integer(0))
+    address_str = address$formatAsString()
+
+    # 获取dataValidation的枚举值
+    constraint = dataValidation$getValidationConstraint()
+    constraint_values = constraint$getExplicitListValues()
+
+    print(address_str)
+    if (length(constraint_values) < 1){
+        value_sheet_name = constraint$getFormula1()
+        sheet_1 = workbook$getSheet(value_sheet_name)
+        row_cnt = sheet_1$getLastRowNum()
+
+        for (row_id in 1:row_cnt){
+            tmp_col = sheet_1$getRow(as.integer(row_id - 1))
+            tmp_col_cnt = tmp_col$getLastCellNum()
+            for (col_id in 1:tmp_col_cnt){
+                cell = tmp_col$getCell(as.integer(col_id - 1))
+                print(cell$toString())
+            }
+
+        }
+    }else{
+        print(constraint_values)
+        }
+}
+```
