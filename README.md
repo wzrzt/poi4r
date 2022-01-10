@@ -1,2 +1,6 @@
 # poi4r
-use apache poi in R
+use apache poi in R.  
+
+Last week I got some xls files and I need to extract data validation from them. I tried some packages like openpyxl in python, xlsx in R and so on. Most packages about Excel only focus on reading and writing data. Openpyxl does have api to extract data validation from sheet, but it only support xlsx file and suggests xlrd for xls. But xlrd ignores data validation.   
+Apache POI supports xls and Sheet object has a method `getDataValidations()` to extract `dataValidation`. But it's hard for me to write a tool with java. I tried and debuged a .java file which runs perfect. But building a jar as as a tool to run in terminal is really difficult. Maven pom.xml is really unfriendly. So I tried to find a python or R wrapper of apache POI and got a package called poi4py. Poi4py works fined after I translate my java code to python code. In cran I found xlsx is also based on poi, but its sheet object doen't have `getDataValidations()` method. So I think maybe `rJava` can help me to run java poi in R. Then I tried and found that it's not difficult. Actually, it's much easier than writing java code, for R users.  
+After my R code runs fine. I found that xlsx is based on xlsxjar which uses very old poi. [`xlsxjars`](https://github.com/colearendt/xlsxjars) has another branch named bump-poi, `remotes::instal_github('colearendt/xlsxjars@bump-poi')` and then sheet object in `xlsx` has `getDataValidations()` method. 
